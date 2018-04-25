@@ -30,8 +30,9 @@ var NOT_SUPPORTED = 'The browser target is not supported: %target%';
 /**
  * Launches the specified browser with the given URL.
  * Based on https://github.com/domenic/opener
- * @param {{target: ?string, url: ?string, dataDir: ?string}} opts - parameters:
+ * @param {{target: ?string, targetoption: ?string, url: ?string, dataDir: ?string}} opts - parameters:
  *   target - the target browser - ie, chrome, safari, opera, firefox or chromium
+ *   targetoption - options for target browser
  *   url - the url to open in the browser
  *   dataDir - a data dir to provide to Chrome (can be used to force it to open in a new window)
  * @return {Promise} Promise to launch the specified browser
@@ -40,6 +41,7 @@ module.exports = function (opts) {
 
     opts = opts || {};
     var target = opts.target || 'default';
+    var targetoption = opts.targetoption || '';
     var url = opts.url || '';
 
     target = target.toLowerCase();
@@ -131,7 +133,7 @@ function getBrowser (target, dataDir) {
     if (target in browsers[process.platform]) {
         var browser = browsers[process.platform][target];
         return checkBrowserExistsWindows(browser, target).then(function () {
-            return Promise.resolve(browser);
+            return Promise.resolve(browser + ' ' + targetoption);
         });
     } else {
         return Promise.reject(NOT_SUPPORTED.replace('%target%', target));
